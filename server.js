@@ -102,8 +102,22 @@ app.get("/comments/detail", function(request, response){
 app.post("/comments/regist", function(request, response){
 	console.log(request.body.msg);
 
-	response.writeHead(200,{"Content-Type":"text/json"});
-	response.end("{name:'zino', age:25}");
+	pool.getConnection(function(error, con){
+		var sql="insert into comments(msg) values(?)";	
+		con.query(sql, [request.body.msg], function(err, result){
+			var data;
+			if(err){
+				console.log(err);
+				data="{\"result\":"+result.affectedRows+"}";
+			}else{
+				data="{\"msg\": \""+request.body.msg+"\",\"result\":"+result.affectedRows+"}";
+			}
+			response.writeHead(200,{"Content-Type":"text/json"});
+			response.end(data);
+			con.release();
+		});	
+	});
+
 });
 
 
