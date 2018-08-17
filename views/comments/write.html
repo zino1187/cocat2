@@ -42,7 +42,22 @@ input[type=submit]:hover {
 $(function(){
 	CKEDITOR.replace("content");	 //textarea를 ckeditor 디자인
 	//으로 대체!!
+
+	$("#bt_regist").click(function(){
+		regist();
+	});
+
+	$("#bt_list").click(function(){
+		$(location).attr("href","/comments/list");
+	});
+	
 });
+function regist(){
+	//서버에 post 요청!!
+	$("#form1").attr("method","post");
+	$("#form1").attr("action","/board/write");
+	$("#form1").submit();
+}
 </script>
 </head>
 <body>
@@ -50,7 +65,7 @@ $(function(){
 <h3>Contact Form</h3>
 
 <div class="container">
-  <form action="/action_page.php">
+  <form id="form1">
     <label for="title">제목</label>
     <input type="text" id="title" name="title" placeholder="제목입력">
 
@@ -61,7 +76,9 @@ $(function(){
     <label for="subject">Subject</label>
     <textarea id="content" name="content" placeholder="Write something.." style="height:200px"></textarea>
 
-    <input type="submit" value="Submit">
+    <input type="button" id="bt_regist"	value="등록">
+	<input type="button" id="bt_list"		value="목록">
+
   </form>
 </div>
 
