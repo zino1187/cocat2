@@ -23,12 +23,36 @@ var pool=mysql.createPool({
 
 //커맨트 원글 등록 요청 
 app.post("/board/write", function(request, response){
+	var title=request.body.title;
+	var writer=request.body.writer;
+	var content=request.body.content;
+
 	pool.getConnection(function(error, con){
 		if(error){
 			console.log(error);
+		}else{
+			var sql="insert into board(title,writer,content) values(?,?,?)";
+			
+			con.query(sql,[title ,writer ,content], function(err, result){
+				console.log(result);
+
+				if(result.affectedRows==1){
+					//클라이언트의 브라우저로 하여금, 지정한 url로 다시 
+					//재접속!!
+					response.redirect("/board/list");
+				}else{
+					response.writeHead(200,{"Content-Type":"text/html;charset=utf-8"});
+					response.end("<script>alert('등록실패');history.back()</script>");
+				}
+			});
 		}
-		console.log(con);
+		con.release();//다시반납
 	});
+});
+
+//글 목록 요청처리 
+app.get("/board/list", function(request, response){
+	response.render("comments/list");
 });
 
 
