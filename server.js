@@ -38,7 +38,7 @@ app.post("/board/write", function(request, response){
 
 				if(result.affectedRows==1){
 					//클라이언트의 브라우저로 하여금, 지정한 url로 다시 
-					//재접속!!
+					//재접속!! , 요청 끊어짐...
 					response.redirect("/board/list");
 				}else{
 					response.writeHead(200,{"Content-Type":"text/html;charset=utf-8"});
@@ -52,7 +52,24 @@ app.post("/board/write", function(request, response){
 
 //글 목록 요청처리 
 app.get("/board/list", function(request, response){
-	response.render("comments/list");
+	
+	pool.getConnection(function(error, con){
+		//부모에 딸려있는 코멘트 게시물의 갯수도 같이 가져옴...
+		var sql="select title, writer, regdate, count(comments_id) as cnt";
+		sql+=" from board b left outer join comments c";
+		sql+=" on b.board_id=c.board_id group by title,writer,regdate";
+		
+		console.log(sql);
+
+		con.query(sql, function(err, result, fields){
+			
+			console.log(result);
+
+			response.render("comments/list",{
+				rows:result
+			});
+		});
+	});
 });
 
 
