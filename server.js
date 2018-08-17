@@ -103,7 +103,7 @@ app.post("/comments/regist", function(request, response){
 	console.log(request.body.msg);
 
 	response.writeHead(200,{"Content-Type":"text/json"});
-	response.end("{name:'zino', age:24}");
+	response.end("{name:'zino', age:25}");
 });
 
 
