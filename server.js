@@ -55,9 +55,9 @@ app.get("/board/list", function(request, response){
 	
 	pool.getConnection(function(error, con){
 		//부모에 딸려있는 코멘트 게시물의 갯수도 같이 가져옴...
-		var sql="select title, writer, regdate, count(comments_id) as cnt";
+		var sql="select b.board_id, title, writer, date_format(regdate,'%Y-%m-%d') as regdate, count(comments_id) as cnt";
 		sql+=" from board b left outer join comments c";
-		sql+=" on b.board_id=c.board_id group by title,writer,regdate";
+		sql+=" on b.board_id=c.board_id group by b.board_id,title,writer,regdate";
 		
 		console.log(sql);
 
@@ -68,8 +68,42 @@ app.get("/board/list", function(request, response){
 			response.render("comments/list",{
 				rows:result
 			});
+			con.release();
+		});
+
+	});
+});
+
+//상세보기 요청 처리 
+app.get("/comments/detail", function(request, response){
+	console.log(request.query);//{ board_id: '1' }	
+	var board_id=request.query.board_id;
+
+	pool.getConnection(function(error, con){
+		var sql="select * from board where board_id=?";
+
+		con.query(sql, [board_id], function(err,result,fields){
+			if(err){
+				console.log(err);
+			}else{
+				console.log(result);
+				response.render("comments/content", {
+					row:result[0]
+				});
+			}
+			con.release();
 		});
 	});
+
+	
+});
+
+//댓글 등록 요청 처리 
+app.post("/comments/regist", function(request, response){
+	console.log(request.body.msg);
+
+	response.writeHead(200,{"Content-Type":"text/json"});
+	response.end("{name:'zino', age:24}");
 });
 
 

@@ -1,0 +1,144 @@
+<%
+	var board_id=row.board_id;
+	var title=row.title;
+	var writer=row.writer;
+	var content=row.content;
+%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body {font-family: Arial, Helvetica, sans-serif;}
+* {box-sizing: border-box;}
+
+input[type=text], select, textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    margin-top: 6px;
+    margin-bottom: 16px;
+    resize: vertical;
+}
+
+input[type=submit] {
+    background-color: #4CAF50;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+input[type=submit]:hover {
+    background-color: #45a049;
+}
+
+.container {
+    border-radius: 5px;
+    background-color: #f2f2f2;
+    padding: 20px;
+}
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th, td {
+    text-align: left;
+    padding: 8px;
+}
+
+tr:nth-child(even){background-color: #f2f2f2}
+
+th {
+    background-color: #4CAF50;
+    color: white;
+}
+
+</style>
+<script src="https://cdn.ckeditor.com/4.10.0/standard/ckeditor.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+$(function(){
+	CKEDITOR.replace("content");	 //textarea를 ckeditor 디자인
+	//으로 대체!!
+
+	$("#bt_regist").click(function(){
+		regist();
+	});
+
+	$("#bt_list").click(function(){
+		$(location).attr("href","/comments/list");
+	});
+
+	$("#bt_reply").click(function(){
+		//웹서버에 비동기방식으로 요청을 시도하자!!
+		//페이지가 새로고침 없이, 현재 화면을 유지하면서 db 연동 가능!!
+		//java, C# 일반적인 응용프로그램의 GUI 수준으로 업그레이드...
+		reply();
+	});
+
+});
+function regist(){
+	//서버에 post 요청!!
+	$("#form1").attr("method","post");
+	$("#form1").attr("action","/board/write");
+	$("#form1").submit();
+}
+
+//Ajax ( Asynchronous Javascript And XML)
+function reply(){
+	//비동기 객체 생성 
+	var xhttp=new XMLHttpRequest();
+	
+	//서버로 요청을 시도한 후, 비동기객체가 보유한 상태변수를 이용
+	//하여 , 서버의 응답이 완료되는 시점에 UI를 업데이트하자!!
+	xhttp.onreadystatechange=function(){
+		console.log("readyState=",this.readyState,"status=",status);
+
+		if (this.readyState == 4 && this.status == 200) {
+			//커맨트 댓글 리스트 추가!!
+			alert("서버에서 날아온 메세지: "+this.responseText);
+		}	
+	}
+
+	xhttp.open("POST", "/comments/regist", true);
+	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	xhttp.send("msg="+$("#msg").val());//전송!!
+}
+</script>
+</head>
+<body>
+
+<h3>상세보기</h3>
+
+<div class="container">
+  <form id="form1">
+    <label for="title">제목</label>
+    <input type="text" id="title" name="title" value="<%=title%>">
+
+    <label for="writer">작성자</label>
+    <input type="text" id="writer" name="writer" value="<%=writer%>">
+
+
+    <label for="subject">Subject</label>
+    <textarea id="content" name="content" placeholder="Write something.." style="height:200px"><%=content%></textarea>
+
+    <input type="button" id="bt_regist"	value="등록">
+	<input type="button" id="bt_list"		value="목록">
+	<input type="text" name="msg" id="msg" style="width:70%;background:dodgerblue;color:#fff">
+	<input type="button" id="bt_reply"		value="댓글등록">
+  </form>
+</div>
+
+<table>
+  <tr>
+    <th width="100%">제목</th>
+  </tr>
+</table>
+
+</body>
+</html>

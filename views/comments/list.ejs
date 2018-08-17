@@ -43,7 +43,7 @@ th {
   <%for(var i=0;i<rows.length;i++){%>
   <%var obj=rows[i];%>
   <tr>
-    <td><%=obj.title%>[<%=obj.cnt%>]</td>
+    <td><a href="/comments/detail?board_id=<%=obj.board_id%>"><%=obj.title%>[<%=obj.cnt%>]</a></td>
     <td><%=obj.writer%></td>
     <td><%=obj.regdate%></td>
   </tr>
