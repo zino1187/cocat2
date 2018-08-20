@@ -87,8 +87,18 @@ app.get("/comments/detail", function(request, response){
 				console.log(err);
 			}else{
 				console.log(result);
-				response.render("comments/content", {
-					row:result[0]
+				
+				//현재 보고있는 글의 자식 코멘트 글의 목록 가져오기 
+				sql="select * from comments where board_id=?";
+				con.query(sql, [board_id] , function(e, result2, fields2){
+					if(e){
+						console.log(e);
+					}else{
+						response.render("comments/content", {
+							row:result[0],
+							rows:result2
+						});
+					}
 				});
 			}
 			con.release();

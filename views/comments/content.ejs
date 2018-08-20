@@ -72,7 +72,7 @@ $(function(){
 	});
 
 	$("#bt_list").click(function(){
-		$(location).attr("href","/comments/list");
+		$(location).attr("href","/board/list");
 	});
 
 	$("#bt_reply").click(function(){
@@ -105,9 +105,7 @@ function reply(){
 			//alert("서버에서 날아온 메세지: "+this.responseText);
 			var obj=JSON.parse(this.responseText);
 
-			str=str+"<div>"+obj.msg+"</div>";
-
-			$("#comments_wrapper").html(str);
+			$("#comments_wrapper").append("<div><%=obj.msg%></div>");
 		}	
 	}
 	
@@ -141,7 +139,12 @@ function reply(){
   </form>
 </div>
 
-<div id="comments_wrapper"></div>
+<div id="comments_wrapper">
+	<%for(var i=0;i<rows.length;i++){%>
+	<%var obj=rows[i];%>
+	<div>메세지:<%=obj.msg%></div>	
+	<%}%>
+</div>
 
 </body>
 </html>
