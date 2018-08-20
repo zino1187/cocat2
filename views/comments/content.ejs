@@ -105,7 +105,7 @@ function reply(){
 			//alert("서버에서 날아온 메세지: "+this.responseText);
 			var obj=JSON.parse(this.responseText);
 
-			$("#comments_wrapper").append("<div><%=obj.msg%></div>");
+			$("#comments_wrapper").append("<div>"+obj.msg+"</div>");
 		}	
 	}
 	
