@@ -130,6 +130,56 @@ app.post("/comments/regist", function(request, response){
 
 });
 
+//게시물 삭제 (원글이 삭제되면, 자식글도 함께 삭제...)
+//트랜잭션 상황...
+app.post("/board/delete", function(request, response){
+	var board_id=request.body.board_id;
+	console.log(board_id);
+
+	
+	pool.getConnection(function(error, con){
+		con.beginTransaction(function(e){
+			if(e){
+				console.log(e);
+			}else{
+				var sql="delete from board where board_id=?";
+				con.query(sql,[board_id], function(err, result){
+					if(err){
+						console.log(err);
+					}else{
+						//부모글이 삭제되었으므로, 자식글 삭제하겟다!!
+						sql="delete from comments where board_id=?";
+						con.query(sql,[board_id], function(err2, result2){
+							if(err2){
+								console.log(err2,"트랜잭션 롤백하겠슴");
+								con.rollback(function(err3){
+									if(err3){
+										console.log("롤백실패");
+									}else{
+										console.log("롤백완료,부모글 삭제 취소");
+									}
+								});
+							}else{
+								console.log("트랜잭션 확정 짓겠음");
+								con.commit(function(err4){
+									if(err4){
+										console.log(err4,"커밋 실패");
+									}else{
+										console.log("커밋 성공");
+										response.writeHead(200,{"Content-Type":"text/html;charset=utf-8"});
+										response.end("<script>alert('삭제완료');location.href='/board/list';</script>");
+									}
+								});
+							}
+						});
+					}
+				});
+				con.release();
+			}
+		});	
+	});
+});
+
 
 server.listen(9999, function(){
 	console.log("웹서버 9999포트에서 실행중....");

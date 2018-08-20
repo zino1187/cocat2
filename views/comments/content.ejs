@@ -82,7 +82,24 @@ $(function(){
 		reply();
 	});
 
+	$("#bt_del").click(function(){
+		del();
+	});
+
 });
+
+function del(){
+	//get 방식으로 요청시...
+	//location.href="/board/delete?board_id=<%//=board_id%>";
+
+	//서버에 post 요청!!
+	if(confirm("이 글을 지우면 댓글도 함께 삭제처리됩니다.\n삭제하시겠습니까?")){
+		$("#form1").attr("method","post");
+		$("#form1").attr("action","/board/delete");
+		$("#form1").submit();
+	}
+}
+
 function regist(){
 	//서버에 post 요청!!
 	$("#form1").attr("method","post");
@@ -133,6 +150,8 @@ function reply(){
 
     <input type="button" id="bt_regist"	value="등록">
 	<input type="button" id="bt_list"		value="목록">
+	<input type="button" id="bt_edit"		value="수정">
+	<input type="button" id="bt_del"		value="삭제">
 	<input type="text" name="msg" id="msg" style="width:70%;background:dodgerblue;color:#fff">
 	<input type="hidden" name="board_id" id="board_id" value="<%=board_id%>">
 	<input type="button" id="bt_reply"		value="댓글등록">
