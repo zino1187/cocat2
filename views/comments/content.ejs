@@ -113,7 +113,7 @@ function reply(){
 	
 	xhttp.open("POST", "/comments/regist", true);
 	xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-	xhttp.send("msg="+$("#msg").val());//전송!!
+	xhttp.send("msg="+$("#msg").val()+"&board_id="+$("#board_id").val());//전송!!
 }
 </script>
 </head>
@@ -136,6 +136,7 @@ function reply(){
     <input type="button" id="bt_regist"	value="등록">
 	<input type="button" id="bt_list"		value="목록">
 	<input type="text" name="msg" id="msg" style="width:70%;background:dodgerblue;color:#fff">
+	<input type="hidden" name="board_id" id="board_id" value="<%=board_id%>">
 	<input type="button" id="bt_reply"		value="댓글등록">
   </form>
 </div>

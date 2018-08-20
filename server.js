@@ -100,11 +100,11 @@ app.get("/comments/detail", function(request, response){
 
 //댓글 등록 요청 처리 
 app.post("/comments/regist", function(request, response){
-	console.log(request.body.msg);
+	console.log(request.body);
 
 	pool.getConnection(function(error, con){
-		var sql="insert into comments(msg) values(?)";	
-		con.query(sql, [request.body.msg], function(err, result){
+		var sql="insert into comments(msg,board_id) values(?,?)";	
+		con.query(sql, [request.body.msg,request.body.board_id], function(err, result){
 			var data;
 			if(err){
 				console.log(err);
