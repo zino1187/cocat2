@@ -239,6 +239,31 @@ app.post("/reboard/regist", function(request, response){
 
 });
 
+//답변게시판 리스트 요청 처리 
+app.get("/reboard/list", function(request, response){
+	
+	//select * from animal order by category asc, rank asc
+	pool.getConnection(function(error, con){
+		if(error){
+			console.log(error);
+		}else{
+			var sql="select * from reboard order by team desc, rank asc";
+			con.query(sql, function(err, result, fields){
+				if(err){
+					console.log(err);
+				}else{
+					response.render("reboard/list", {
+						rows:result
+					});
+				}
+				con.release();
+			});
+		}
+	});
+
+});
+
+
 server.listen(9999, function(){
 	console.log("웹서버 9999포트에서 실행중....");
 });
