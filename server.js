@@ -263,6 +263,29 @@ app.get("/reboard/list", function(request, response){
 
 });
 
+//상세보기 요청 처리 
+app.get("/reboard/content", function(request, response){
+	var reboard_id=request.query.reboard_id;//사용자가 본 글의 reboard_id
+	
+	pool.getConnection(function(error, con){
+		if(error){
+			console.log(error);
+		}else{
+			var sql="select * from reboard where reboard_id=?";
+			con.query(sql,[reboard_id], function(err, result, fields){
+				if(err){
+					console.log(err);
+				}else{
+					response.render("reboard/content", {
+						row:result[0] //배열에 들어있었던 json 1건을 넘겨버림
+					});
+				}
+				con.release();
+			});
+		}
+	});
+
+});
 
 server.listen(9999, function(){
 	console.log("웹서버 9999포트에서 실행중....");
