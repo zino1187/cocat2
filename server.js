@@ -181,6 +181,64 @@ app.post("/board/delete", function(request, response){
 });
 
 
+/*----------------------------------------------------------
+답변게시판 관련
+----------------------------------------------------------*/
+app.post("/reboard/regist", function(request, response){
+	var writer=request.body.writer;
+	var title=request.body.title;
+	var content=request.body.content;
+	
+	pool.getConnection(function(error, con){
+		if(error){
+			console.log(error, "풀에서 커넥션 얻기 실패..");
+		}else{
+			
+			con.beginTransaction(function(e){
+				if(e){
+					console.log(e);
+					con.release();
+				}else{
+					var sql="insert into reboard(writer,title,content) values(?,?,?)";
+					con.query(sql,[writer,title,content], function(err1, result1){
+						if(err1){
+							console.log(err1);
+							con.release();
+						}else{
+							//아까 넣지 못했던 team 의 값을 update 
+							sql="update reboard set team=(select last_insert_id()) where reboard_id=(select last_insert_id())";
+							con.query(sql, function(e2, result2){
+								if(e2){
+									console.log("롤백대상임", e2);
+									con.rollback(function(e3){
+										if(e3)console.log(e3);
+									});
+									con.release();
+								}else{
+									con.commit(function(e4){
+										if(e4){
+											console.log("커밋실패",e4);
+										}else{
+											console.log("커밋성공");
+											response.writeHead(200,{"Content-Type":"text/html;charset=utf-8"});
+											response.end("<script>alert('등록성공');location.href='/reboard/list';</script>");
+										}
+										con.release();
+									});
+								}
+							});
+						}
+					});
+
+				}
+			});
+
+
+		}
+	});
+
+});
+
 server.listen(9999, function(){
 	console.log("웹서버 9999포트에서 실행중....");
 });
