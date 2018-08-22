@@ -41,33 +41,25 @@ $(function(){
 <body>
 <table>
   <tr>
-    <th>Firstname</th>
-    <th>Lastname</th>
-    <th>Savings</th>
+    <th>No</th>
+    <th>제목</th>
+    <th>작성자</th>
+	<th>작성일</th>
+	<th>조회수</th>
   </tr>
+  <%for(var i=0;i<rows.length;i++){%>
+  <%var obj=rows[i];%>
   <tr>
-    <td>Peter</td>
-    <td>Griffin</td>
-    <td>$100</td>
+    <td><%=i%></td>
+    <td><a href="/reboard/content?reboard_id=<%=obj.reboard_id%>"><%=obj.title%></a></td>
+    <td><%=obj.writer%></td>
+	<td><%=obj.regdate%></td>
+	<td><%=obj.hit%></td>
   </tr>
+	<%}%>
   <tr>
-    <td>Lois</td>
-    <td>Griffin</td>
-    <td>$150</td>
-  </tr>
-  <tr>
-    <td>Joe</td>
-    <td>Swanson</td>
-    <td>$300</td>
-  </tr>
-  <tr>
-    <td>Cleveland</td>
-    <td>Brown</td>
-    <td>$250</td>
-</tr>
-  <tr>
-    <td colspan="3">
-		<button>글등록</button>
+    <td colspan="5">
+		<button onClick="location.href='/reboard/write.html';">글등록</button>
 	</td>
 </tr>
 

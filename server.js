@@ -287,6 +287,20 @@ app.get("/reboard/content", function(request, response){
 
 });
 
+//답변 달기 폼 요청 처리 
+//상세보기에서의 내용들을 파라미터로 전송받아와야 하므로,
+//post 방식으로 받아야 함
+app.post("/reboard/replyForm", function(request, response){
+	response.render("reboard/reply",{
+		row:request.body /* request.body 는 json 이었다*/
+	});	
+});
+
+//답변 요청 처리 
+app.post("/reboard/reply", function(request, response){
+
+});
+
 server.listen(9999, function(){
 	console.log("웹서버 9999포트에서 실행중....");
 });
