@@ -80,20 +80,14 @@ $(function(){
 	CKEDITOR.replace("content");
 
 	//버튼을 누르면 글쓰기 요청시도!!!
-	$("input[type=button]").on("click", function(){
-		regist();
+	$("#bt_reply").on("click", function(){
+		reply();
 	});
 });
 
-function regist(){
-	//$("form").attr("action","/reboard/regist");
-	//$("form").attr("method","post");
-
-	//chainning
-	//$("form").attr("action","/reboard/regist").attr("method","post");
-
+function reply(){
 	$("form").attr({
-		action:"/reboard/regist",
+		action:"/reboard/reply",
 		method:"post"
 	});
 	$("form").submit(); //전송일어남!!
@@ -104,6 +98,10 @@ function regist(){
 <body>
 <div class="container">
   <form>
+	<input type="hidden" name="team" value="<%=row.team%>">
+	<input type="hidden" name="rank" value="<%=row.rank%>">
+	<input type="hidden" name="depth" value="<%=row.depth%>">
+
     <div class="row">
       <div class="col-25">
         <label for="writer">작성자</label>
@@ -131,9 +129,7 @@ function regist(){
     </div>
   </form>
 	<div class="row">
-		<input type="button" id="bt_reply" value="답변달기">
-		<input type="button" id="bt_edit"  value="수정">
-		<input type="button" id="bt_del"  value="삭제">
+		<input type="button" id="bt_reply" value="답변등록">
 		<input type="button" id="bt_list"  value="목록">
 	</div>
 

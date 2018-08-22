@@ -23,6 +23,8 @@ th {
     color: white;
 }
 </style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="https://unpkg.com/react@16/umd/react.production.min.js" crossorigin></script>
 <script src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js" crossorigin></script>
@@ -51,7 +53,14 @@ $(function(){
   <%var obj=rows[i];%>
   <tr>
     <td><%=i%></td>
-    <td><a href="/reboard/content?reboard_id=<%=obj.reboard_id%>"><%=obj.title%></a></td>
+    <td>
+		<div style="position:relative;left:<%=obj.depth*20%>px">
+			<%if(obj.depth>0){%>
+				<i class="fa fa-commenting-o" style="font-size:24px"></i>
+			<%}%>	
+			<a href="/reboard/content?reboard_id=<%=obj.reboard_id%>"><%=obj.title%></a>
+		</div>
+	</td>
     <td><%=obj.writer%></td>
 	<td><%=obj.regdate%></td>
 	<td><%=obj.hit%></td>

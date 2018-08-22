@@ -298,6 +298,61 @@ app.post("/reboard/replyForm", function(request, response){
 
 //답변 요청 처리 
 app.post("/reboard/reply", function(request, response){
+	var writer=request.body.writer;
+	var title=request.body.title;
+	var content=request.body.content;
+	var team=request.body.team;
+	var rank=request.body.rank;
+	var depth=request.body.depth;
+
+	console.log("team=",team,"rank=",rank,"depth=",depth);
+
+	pool.getConnection(function(error, con){
+		if(error){
+			console.log(error);
+		}else{
+			//트랜잭션 시작 
+			con.beginTransaction(function(err){
+				if(err){
+					con.release();
+				}else{
+					//답변이 들어갈 자리 확보 
+					var sql="update reboard set rank=rank+1 where team=? and rank > ?";
+					con.query(sql, [team, rank], function(e1,result1){
+						if(e1){
+							console.log(e1);
+							con.release();
+						}else{
+							sql="insert into reboard(writer,title,content,team,rank,depth)";
+							sql+=" values(?,?,?,?,?,?)";
+							con.query(sql,[writer,title,content,team, parseInt(rank)+1, parseInt(depth)+1], function(e2,result2){
+								if(e2){
+									console.log("트랜잭션 롤백 대상..",e2);
+									con.rollback(function(e3){
+										if(e3)console.log(e3);
+									});
+								}else{
+									console.log("커밋대상..");
+									con.commit(function(e4){
+										if(e4){
+											console.log(e4);
+										}else{
+											response.writeHead(200,{"Content-Type":"text/html;charset=utf-8"});
+											response.end("<script>alert('답변등록 성공');location.href='/reboard/list';</script>");
+										}
+									});
+								}
+								con.release();
+							});
+						}
+					});
+				}
+			});
+		}
+	});
+
+	
+
 
 });
 

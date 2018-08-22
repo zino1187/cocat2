@@ -99,6 +99,10 @@ function edit(){
 <body>
 <div class="container">
   <form>
+	<input type="hidden" name="team" value="<%=row.team%>">
+	<input type="hidden" name="rank" value="<%=row.rank%>">
+	<input type="hidden" name="depth" value="<%=row.depth%>">
+
     <div class="row">
       <div class="col-25">
         <label for="writer">작성자</label>
